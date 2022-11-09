@@ -14,7 +14,7 @@ async def get_weather(city: str):
     
     response = requests.get(url)
     if response.status_code == 404:
-        return f"Could not find data for {city}"
+        return f"Could not find data for {city}."
     elif response.status_code != 200:
         return "There was a problem with the weather API."
 
@@ -26,7 +26,8 @@ async def get_weather(city: str):
         title = data['weather'][0]['main'].strip()
         desc = data['weather'][0]['description'].strip()
         humid = int(data['main']['humidity'])
-        answ = f"{data['name']}: {temp}°C {title} ({desc}) {humid}% humidity"
+        wind = data['wind']['speed'] * 3.6
+        answ = f"{data['name']}: {temp}°C {title} ({desc}) - {humid}% humidity - {wind} km/h wind"
     except Exception:
         answ = "Failed to process data."
     
@@ -41,10 +42,10 @@ GUILDS=["696704049252270131", "768932461710540810"]
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
-@bot.slash_command(guild_ids=GUILDS, description="Big Tasty")
+@bot.slash_command(guild_ids=GUILDS, description="Big Tasty Help")
 async def tasty(ctx):
     await ctx.respond("""
-        Befehle: \n/tasty \n/weather <city>                  
+        Commands: \n/tasty \n/weather <city>                  
     """)
     
 @bot.slash_command(guild_ids=GUILDS, description="Get the current weather", hidden=True)
