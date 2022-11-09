@@ -26,7 +26,7 @@ async def get_weather(city: str):
         title = data['weather'][0]['main'].strip()
         desc = data['weather'][0]['description'].strip()
         humid = int(data['main']['humidity'])
-        wind = data['wind']['speed'] * 3.6
+        wind = "{:.2f}".format(data['wind']['speed'] * 3.6)
         answ = f"{data['name']}: {temp}°C {title} ({desc}) - {humid}% humidity - {wind} km/h wind"
     except Exception:
         answ = "Failed to process data."
