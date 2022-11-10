@@ -84,7 +84,7 @@ async def meme(ctx: Context):
 
 # Weather command
 
-@bot.slash_command(guild_ids=GUILDS, description="Get the current weather", hidden=True)
+@bot.slash_command(guild_ids=GUILDS, description="Get the current weather")
 async def weather(ctx: Context, city: str):
     data = await get_weather(city)
     await ctx.respond(data, ephemeral=True)
@@ -95,35 +95,35 @@ math_cmds = discord.SlashCommandGroup("math", "Math related commands", guild_ids
 
 @math_cmds.command(description="Add two numbers")
 async def add(ctx, v1: float, v2: float):
-    await ctx.respond(f"Solution: {v1} + {v2} = {v1+v2}")
+    await ctx.respond(f"{v1} + {v2} = {v1+v2}", ephemeral=True)
 
 @math_cmds.command(description="Subtract two numbers")
 async def sub(ctx, v1: float, v2: float):
-    await ctx.respond(f"Solution: {v1} - {v2} = {v1-v2}")
+    await ctx.respond(f"{v1} - {v2} = {v1-v2}", ephemeral=True)
 
 @math_cmds.command(description="Multiply two numbers")
 async def mul(ctx, v1: float, v2: float):
-    await ctx.respond(f"Solution: {v1} * {v2} = {v1*v2}")
+    await ctx.respond(f"{v1} * {v2} = {v1*v2}", ephemeral=True)
 
 @math_cmds.command(description="Divide two numbers")
 async def div(ctx, v1: float, v2: float):
-    await ctx.respond(f"Solution: {v1} : {v2} = {v1/v2}")
+    await ctx.respond(f"{v1} : {v2} = {v1/v2}", ephemeral=True)
 
 @math_cmds.command(description="Square root of a number")
 async def sqrt(ctx, value: float):
-    await ctx.respond(f"Solution: square root of {value} = {math.sqrt(value)}")
+    await ctx.respond(f"Square root of {value} = {math.sqrt(value)}", ephemeral=True)
 
 @math_cmds.command(description="Sinus of a number")
 async def sin(ctx, value: float):
-    await ctx.respond(f"Solution: sinus of {value} = {math.sin(value)}")
+    await ctx.respond(f"Sinus of {value} = {math.sin(value)}", ephemeral=True)
 
 @math_cmds.command(description="Cosinus of a number")
 async def cos(ctx, value: float):
-    await ctx.respond(f"Solution: Cosinus of {value} = {math.cos(value)}")
+    await ctx.respond(f"Cosinus of {value} = {math.cos(value)}", ephemeral=True)
 
 @math_cmds.command(description="Tangens of a number")
 async def tan(ctx, value: float):
-    await ctx.respond(f"Solution: Tangens of {value} = {math.tan(value)}")
+    await ctx.respond(f"Tangens of {value} = {math.tan(value)}", ephemeral=True)
 
 bot.add_application_command(math_cmds)
 
