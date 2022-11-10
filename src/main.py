@@ -46,7 +46,7 @@ async def get_meme():
     sub = subreddits[random.randint(0, len(subreddits)-1)]
     url = f"https://www.reddit.com/{sub}/.json"
 
-    response = requests.get(url)
+    response = requests.get(url, headers={'User-agent': 'Big Tasty Discord Bot'})
     answ = "<No meme>"
 
     try:
