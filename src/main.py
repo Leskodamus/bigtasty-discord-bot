@@ -117,7 +117,10 @@ async def mul(ctx, v1: float, v2: float):
 
 @math_cmds.command(description="Divide two numbers")
 async def div(ctx, v1: float, v2: float):
-    await ctx.respond(f"{v1} : {v2} = {v1/v2}", ephemeral=True)
+    if v2 == 0:
+        await ctx.respond("You have destroyed the univsere. Oh no...", ephemeral=True)
+    else:
+        await ctx.respond(f"{v1} : {v2} = {v1/v2}", ephemeral=True)
 
 @math_cmds.command(description="Square root of a number")
 async def sqrt(ctx, value: float):
