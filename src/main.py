@@ -1,3 +1,5 @@
+import random
+import math
 import requests
 import discord
 from discord.commands.context import ApplicationContext as Context
@@ -34,9 +36,34 @@ async def get_weather(city: str):
     return answ
 
 
+async def get_meme():
+    subreddits = [
+        "r/memes",
+        "r/dankmemes",
+        "r/me_irl"
+    ]
+
+    sub = subreddits[random.randint(0, len(subreddits)-1)]
+    url = f"https://www.reddit.com/{sub}/.json"
+
+    response = requests.get(url)
+    answ = "<No meme>"
+
+    try:
+        data = response.json()
+        n_posts = len(data['data']['children'])
+        post = data['data']['children'][random.randint(0, n_posts-1)]['data']
+        answ = f"{post['url']}"
+    except Exception as e:
+        answ = "Failed to process data."
+        print(e)
+    
+    return answ
+
+
 bot = discord.Bot()
 
-GUILDS=["696704049252270131", "768932461710540810"]
+GUILDS=[696704049252270131, 768932461710540810]
 
 @bot.event
 async def on_ready():
@@ -47,11 +74,58 @@ async def tasty(ctx):
     await ctx.respond("""
         Commands: \n/tasty \n/weather <city>                  
     """)
-    
+
+# Random meme picker from reddit
+
+@bot.slash_command(guild_ids=GUILDS, description="Get a random meme")
+async def meme(ctx: Context):
+    meme = await get_meme()
+    await ctx.respond(meme)
+
+# Weather command
+
 @bot.slash_command(guild_ids=GUILDS, description="Get the current weather", hidden=True)
 async def weather(ctx: Context, city: str):
     data = await get_weather(city)
     await ctx.respond(data, ephemeral=True)
+
+# Math commands
+
+math_cmds = discord.SlashCommandGroup("math", "Math related commands", guild_ids=GUILDS)
+
+@math_cmds.command(description="Add two numbers")
+async def add(ctx, v1: float, v2: float):
+    await ctx.respond(f"Solution: {v1} + {v2} = {v1+v2}")
+
+@math_cmds.command(description="Subtract two numbers")
+async def sub(ctx, v1: float, v2: float):
+    await ctx.respond(f"Solution: {v1} - {v2} = {v1-v2}")
+
+@math_cmds.command(description="Multiply two numbers")
+async def mul(ctx, v1: float, v2: float):
+    await ctx.respond(f"Solution: {v1} * {v2} = {v1*v2}")
+
+@math_cmds.command(description="Divide two numbers")
+async def div(ctx, v1: float, v2: float):
+    await ctx.respond(f"Solution: {v1} : {v2} = {v1/v2}")
+
+@math_cmds.command(description="Square root of a number")
+async def sqrt(ctx, value: float):
+    await ctx.respond(f"Solution: square root of {value} = {math.sqrt(value)}")
+
+@math_cmds.command(description="Sinus of a number")
+async def sin(ctx, value: float):
+    await ctx.respond(f"Solution: sinus of {value} = {math.sin(value)}")
+
+@math_cmds.command(description="Cosinus of a number")
+async def cos(ctx, value: float):
+    await ctx.respond(f"Solution: Cosinus of {value} = {math.cos(value)}")
+
+@math_cmds.command(description="Tangens of a number")
+async def tan(ctx, value: float):
+    await ctx.respond(f"Solution: Tangens of {value} = {math.tan(value)}")
+
+bot.add_application_command(math_cmds)
 
 
 bot.run(DISCORD_BOT_API_KEY)
