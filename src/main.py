@@ -89,6 +89,16 @@ async def weather(ctx: Context, city: str):
     data = await get_weather(city)
     await ctx.respond(data, ephemeral=True)
 
+# Poll command
+
+@bot.slash_command(guild_ids=GUILDS, description="Create a simple poll")
+async def poll(ctx: Context, question: str):
+    if question == "":
+        await ctx.respond("No empty questions allowed!", ephemeral=True)
+
+    text = f"**Poll! @everyone**\n{question}\nReact with :arrow_up: for 'Yes' and :arrow_down: for 'No'"
+    await ctx.respond(text, allowed_mentions = discord.AllowedMentions(everyone=True))
+
 # Math commands
 
 math_cmds = discord.SlashCommandGroup("math", "Math related commands", guild_ids=GUILDS)
