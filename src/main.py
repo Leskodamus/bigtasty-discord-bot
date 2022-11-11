@@ -97,7 +97,10 @@ async def poll(ctx: Context, question: str):
         await ctx.respond("No empty questions allowed!", ephemeral=True)
 
     text = f"**Poll! @everyone**\n{question}\nReact with :arrow_up: for 'Yes' and :arrow_down: for 'No'"
-    await ctx.respond(text, allowed_mentions = discord.AllowedMentions(everyone=True))
+    msg = await ctx.channel.send(text, allowed_mentions = discord.AllowedMentions(everyone=True))
+    await msg.add_reaction("⬆️")
+    await msg.add_reaction("⬇️")
+    await ctx.respond("Creating new poll.", ephemeral=True, delete_after=0)
 
 # Math commands
 
