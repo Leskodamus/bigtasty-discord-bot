@@ -176,7 +176,7 @@ async def poll(ctx: Context, question: str):
         value="React with :arrow_up: for `Yes` and :arrow_down: for `No`",
         inline=False)
 
-    msg = await ctx.channel.send("@everyone", embed=embed, allowed_mentions = discord.AllowedMentions(everyone=True))
+    msg = await ctx.channel.send("@here", embed=embed)
     await msg.add_reaction("⬆️")
     await msg.add_reaction("⬇️")
     await ctx.respond("Creating new poll.", ephemeral=True, delete_after=0)
