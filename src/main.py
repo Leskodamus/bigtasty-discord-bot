@@ -72,11 +72,25 @@ async def get_meme():
         n_posts = len(data['data']['children'])
         post = data['data']['children'][random.randint(0, n_posts-1)]['data']
         answ = f"{post['url']}"
-    except Exception as e:
+    except Exception:
         answ = "Failed to process data."
-        print(e)
     
     return answ
+
+
+async def get_crypto(currency: str):
+    currency = currency.upper()
+    url = "https://api.bitpanda.com/v1/ticker"
+
+    response = requests.get(url)
+    if response.status_code != 200:
+        return "There was an error with the currency API."
+
+    try:
+        data = response.json()
+        return f"1 {currency} = {data[currency]['EUR']}€"
+    except Exception:
+        return "Failed to process data."
 
 
 bot = discord.Bot()
@@ -138,6 +152,13 @@ async def meme(ctx: Context):
 async def weather(ctx: Context, city: str):
     embed = await get_weather(city)
     await ctx.respond(embed=embed, ephemeral=True)
+
+# Crypto price command
+
+@bot.slash_command(guild_ids=GUILDS, description="Get the current price of <crypto>")
+async def crypto(ctx: Context, currency: str):
+    text = await get_crypto(currency)
+    await ctx.respond(text, ephemeral=True)
 
 # Poll command
 
