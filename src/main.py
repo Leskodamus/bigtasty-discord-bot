@@ -7,20 +7,28 @@ from creds import *     # API keys/tokens
 
 
 async def get_weather(city: str):
+    embed = discord.Embed(
+        title="Weather",
+    )
+
     url = "https://api.openweathermap.org/data/2.5/weather?q=" 
     
     if city == "":
-        return "Please submit a city."
+        embed.add_field(name="Error!",
+            value="Please submit a city.")
+        return embed 
     
     url += city + "&APPID=" + WEATHER_API_KEY
     
     response = requests.get(url)
     if response.status_code == 404:
-        return f"Could not find data for {city}."
+        embed.add_field(name="Error!",
+            value=f"Could not find data for {city}.")
+        return embed 
     elif response.status_code != 200:
-        return "There was a problem with the weather API."
-
-    answ = "<No data>"
+        embed.add_field(name="Error!",
+            value="There was a problem with the weather API.")
+        return embed 
 
     try:
         data = response.json()
@@ -29,11 +37,21 @@ async def get_weather(city: str):
         desc = data['weather'][0]['description'].strip()
         humid = int(data['main']['humidity'])
         wind = "{:.2f}".format(data['wind']['speed'] * 3.6)
-        answ = f"{data['name']}: {temp}°C {title} ({desc}) - {humid}% humidity - {wind} km/h wind"
+
+        embed.add_field(name=f"Result for {data['name']}",
+            value=f"""
+                Weather: {title} ({desc}) 
+                Temperature: {temp}°C 
+                Humidity: {humid}% 
+                Wind: {wind} km/h 
+            """
+        )
     except Exception:
-        answ = "Failed to process data."
+        embed.add_field(name="Error!",
+            value="Failed to process data."
+        )
     
-    return answ
+    return embed
 
 
 async def get_meme():
@@ -71,9 +89,41 @@ async def on_ready():
 
 @bot.slash_command(guild_ids=GUILDS, description="Big Tasty Help")
 async def tasty(ctx):
-    await ctx.respond("""
-        Commands: \n/tasty \n/weather <city>                  
-    """)
+    embed = discord.Embed(
+        title="Big Tasty - Brother of Big Mac",
+        description="Big Tasty Help Menu"
+    )
+    embed.add_field(name="Casual commands:",
+        value="""
+            `/tasty`
+            This help menu
+            `/meme`
+            Get a random meme
+            `/weather <city>`
+            Get the current weather
+        """)
+    embed.add_field(name="Math commands:",
+        value="""
+            `/math add <v1> <v2>`
+            Add <v2> to <v1>
+            `/math sub <v1> <v2>`
+            Subtract <v2> from <v1>
+            `/math mul <v1> <v2>`
+            Multiply <v1> with <v2>
+            `/math div <v1> <v2>`
+            Divide <v1> by <v2>
+            `/math sqrt <value>`
+            Get square root of <value>
+            `/math sin <value>`
+            Get sinus of <value>
+            `/math cos <value>`
+            Get cosinus of <value>
+            `/math tan <value>`
+            Get tangens of <value>
+        """,
+        inline=False)
+    embed.set_thumbnail(url=bot.user.avatar.url)
+    await ctx.respond(embed=embed)
 
 # Random meme picker from reddit
 
@@ -86,8 +136,8 @@ async def meme(ctx: Context):
 
 @bot.slash_command(guild_ids=GUILDS, description="Get the current weather")
 async def weather(ctx: Context, city: str):
-    data = await get_weather(city)
-    await ctx.respond(data, ephemeral=True)
+    embed = await get_weather(city)
+    await ctx.respond(embed=embed, ephemeral=True)
 
 # Poll command
 
@@ -96,8 +146,16 @@ async def poll(ctx: Context, question: str):
     if question == "":
         await ctx.respond("No empty questions allowed!", ephemeral=True)
 
-    text = f"**Poll! @everyone**\n{question}\nReact with :arrow_up: for 'Yes' and :arrow_down: for 'No'"
-    msg = await ctx.channel.send(text, allowed_mentions = discord.AllowedMentions(everyone=True))
+    embed = discord.Embed(
+        title="Poll",
+        description=f"by {ctx.author.mention}"
+    )
+    embed.add_field(name="Subject", value=question)
+    embed.add_field(name="Vote", 
+        value="React with :arrow_up: for `Yes` and :arrow_down: for `No`",
+        inline=False)
+
+    msg = await ctx.channel.send("@everyone", embed=embed, allowed_mentions = discord.AllowedMentions(everyone=True))
     await msg.add_reaction("⬆️")
     await msg.add_reaction("⬇️")
     await ctx.respond("Creating new poll.", ephemeral=True, delete_after=0)
