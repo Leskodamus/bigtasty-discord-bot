@@ -127,6 +127,7 @@ async def tasty(ctx):
         title="Big Tasty - Brother of Big Mac",
         description="Big Tasty Help Menu"
     )
+
     embed.add_field(name="Casual commands:",
         value="""
             `/tasty`
@@ -136,6 +137,7 @@ async def tasty(ctx):
             `/weather <city>`
             Get the current weather
         """)
+
     embed.add_field(name="Math commands:",
         value="""
             `/math add <v1> <v2>`
@@ -156,6 +158,12 @@ async def tasty(ctx):
             Get tangens of <value>
         """,
         inline=False)
+
+    embed.add_field(name="ChatGPT command:",
+        value="""
+            `!gpt <message>`
+            Ask ChatGPT anything
+        """)
     embed.set_thumbnail(url=bot.user.avatar.url)
     await ctx.respond(embed=embed)
 
