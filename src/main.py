@@ -1,3 +1,4 @@
+import re as rgx
 import random
 import math
 import openai
@@ -19,7 +20,9 @@ async def ask_chatgpt(text: str):
         n = 1
     )
 
-    return res.choices[0].text
+    # Use regex here to remove content before 
+    # and including the two new lines
+    return rgx.sub(".*\\n\\n", '', res.choices[0].text)
 
 
 async def get_weather(city: str):
