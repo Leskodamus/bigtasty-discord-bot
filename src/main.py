@@ -1,7 +1,6 @@
 import re as rgx
 import random
 import math
-import openai
 import requests
 import discord
 from discord.commands.context import ApplicationContext as Context
@@ -9,21 +8,6 @@ from creds import *     # API keys/tokens
 
 
 # Helper functions
-
-async def ask_chatgpt(text: str):
-    openai.api_key = OPENAI_API_KEY
-    res = openai.Completion.create(
-        engine = "text-davinci-003",
-        prompt = text,
-        temperature = 0.5,
-        max_tokens = 2000,
-        n = 1
-    )
-
-    # Use regex here to remove content before 
-    # and including the two new lines
-    return rgx.sub(".*\\n\\n", '', res.choices[0].text)
-
 
 async def get_weather(city: str):
     embed = discord.Embed(
@@ -162,11 +146,6 @@ async def tasty(ctx):
         """,
         inline=False)
 
-    embed.add_field(name="ChatGPT command:",
-        value="""
-            `!gpt <message>`
-            Ask ChatGPT anything
-        """)
     embed.set_thumbnail(url=bot.user.avatar.url)
     await ctx.respond(embed=embed)
 
@@ -262,12 +241,5 @@ async def on_message(msg: discord.Message):
     # Prevent bot from replying to itself
     if msg.author.id == bot.user.id:
         return
-
-    # ChatGPT reply cmd
-    if msg.content.startswith("!gpt"):
-        text = msg.content[len("!gpt"):]
-        gpt = await ask_chatgpt(text)
-        await msg.reply(gpt, mention_author=True)
-
 
 bot.run(DISCORD_BOT_API_KEY)
