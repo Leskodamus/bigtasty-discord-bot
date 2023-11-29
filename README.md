@@ -1,4 +1,3 @@
 # Big Tasty Discord Bot
 
-written in Python using py-cord
-
+written in Python using `py-cord`
