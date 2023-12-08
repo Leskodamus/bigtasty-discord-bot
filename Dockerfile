@@ -1,4 +1,6 @@
 FROM python:3.10
-RUN pip install requests py-cord openai
-WORKDIR /usr/app/src
+COPY ./src /opt/app/
+COPY ./requirements.txt /opt/app
+WORKDIR /opt/app
+RUN pip install -r requirements.txt
 

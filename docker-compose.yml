@@ -5,7 +5,7 @@ services:
     build: .
     container_name: bigtasty-bot
     volumes:
-      - ${PWD}/src:/usr/app/src
-    command: "python ./main.py"
+      - ${PWD}/src:/opt/app/src
+    command: "python ./src/main.py"
     restart: always
 
